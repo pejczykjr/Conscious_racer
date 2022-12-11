@@ -2,19 +2,25 @@ package com.game.main;
 
 import java.awt.*;
 
-//GameObject is going to be what we refer to as all the game objects
+//This class is going to be what we refer to as all the game objects
 public abstract class GameObject {
 
+//  VARIABLES
+//  ---------
     protected int x, y;
     protected ID id;
     protected int velX, velY;
 
+//  CONSTRUCTOR
+//  -----------
     public GameObject(int x, int y, ID id){
         this.x=x;
         this.y=y;
         this.id=id;
     }
 
+//  METHODS
+//  -------
     public abstract void tick();
     public abstract void render (Graphics g);
 

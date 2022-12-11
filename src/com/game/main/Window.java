@@ -6,6 +6,8 @@ import java.awt.*;
 //This class creates visible window
 public class Window extends Canvas {
 
+//  CONSTRUCTOR
+//  -----------
     public Window(int width, int height, String title, Game game){
         JFrame frame = new JFrame(title);
         frame.setPreferredSize(new Dimension(width, height));
