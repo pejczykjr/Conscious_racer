@@ -10,7 +10,11 @@ public class Game extends Canvas implements Runnable {
 
 //  VARIABLES
 //  ---------
-    public static final int WIDTH = 1280, HEIGHT = 1024;
+    public static final int WIDTH = 1280, HEIGHT = 1024;    //1296x1063, actually 1296-1280=16 and 1063-1024=39 -> map has to be 1264x985
+    public static final int carWidth = 250, carHeight = 200;
+    public static final int widthCorrection = 16, heightCorrection = 39;    //It is needed to correct dimensions, explanation above
+    public static final int downBarHeight = 26; //Object cannot cover bar with game status
+
     private Thread thread;
     private boolean running = false;
     private Handler handler;
@@ -26,8 +30,8 @@ public class Game extends Canvas implements Runnable {
 
         new Window(WIDTH,HEIGHT,"Conscious racer", this);
 
-        handler.addObject(new Player((WIDTH-250)/2,(HEIGHT-200)/2,ID.Player));
-        handler.addObject(new Enemy(random.nextInt(WIDTH-270),random.nextInt(HEIGHT-235),ID.Enemy2));
+        handler.addObject(new Player((WIDTH-carWidth)/2,(HEIGHT-carHeight)/2,ID.Player));
+        handler.addObject(new Enemy(random.nextInt(WIDTH-carWidth-widthCorrection),random.nextInt(HEIGHT-carHeight-heightCorrection-downBarHeight),ID.Enemy2));
     }
 
 //  METHODS
@@ -79,6 +83,7 @@ public class Game extends Canvas implements Runnable {
         stop();
     }
 
+    //It prevents the user to move object out of the map bounds
     public static int clamp(int var, int min, int max){
         if(var>=max)
             return var=max;
@@ -102,7 +107,7 @@ public class Game extends Canvas implements Runnable {
         }
         Graphics g = bs.getDrawGraphics();
 
-        ImageIcon bg = new ImageIcon("C:\\Users\\piecz\\Desktop\\JPWP gra\\Pictures\\track_2.png");
+        ImageIcon bg = new ImageIcon("C:\\Users\\piecz\\Desktop\\JPWP gra\\Conscious_racer\\Pictures\\Tracks 1264x985\\track_11.png");
         pic = bg.getImage();
         g.drawImage(pic, 0, 0, null);
 
@@ -114,7 +119,6 @@ public class Game extends Canvas implements Runnable {
 
     public static void main(String[] args){
         new Game();
-
     }
 
 }

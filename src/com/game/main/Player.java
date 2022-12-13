@@ -26,13 +26,13 @@ public class Player extends GameObject {
         x+=velX;
         y+=velY;
 
-        x=Game.clamp(x,0, Game.WIDTH-270);
-        y=Game.clamp(y,0,Game.HEIGHT-235);
+        x=Game.clamp(x,0, Game.WIDTH-Game.carWidth-Game.widthCorrection);  //It checks if object is at the bound in x-axis
+        y=Game.clamp(y,0,Game.HEIGHT-Game.carHeight-Game.heightCorrection-Game.downBarHeight);  //It checks if object is at the bound in y-axis
     }
 
     public void render(Graphics g) {
         if(id == ID.Player) {
-            ImageIcon bg = new ImageIcon("C:\\Users\\piecz\\Desktop\\JPWP gra\\Pictures\\blue_car_resized.png");
+            ImageIcon bg = new ImageIcon("C:\\Users\\piecz\\Desktop\\JPWP gra\\Conscious_racer\\Pictures\\Cars and light\\blue_car_resized.png");
             pic = bg.getImage();
             g.drawImage(pic, x,y ,null);
 

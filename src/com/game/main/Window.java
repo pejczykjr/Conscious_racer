@@ -20,6 +20,22 @@ public class Window extends Canvas {
         frame.add(game);
         frame.setVisible(true);
         game.start();
+
+/*      SECOND IDEA
+        ALL GRAPHICS AUTO SCALE, BUT FRAME DIMENSIONS RISE TO 1296x1063
+        ---------------------------------------------------------------
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.add(game);
+        game.setPreferredSize(new Dimension(width, height));
+        frame.setResizable(false);
+        frame.pack();
+
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+        game.start();
+        System.out.println(frame.getHeight());
+        System.out.println(frame.getWidth());
+*/
     }
 
 }
