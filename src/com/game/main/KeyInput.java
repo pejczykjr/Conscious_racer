@@ -8,7 +8,7 @@ public class KeyInput extends KeyAdapter {
 
 //  VARIABLES
 //  ---------
-    private Handler handler;
+    private final Handler handler;
 
 //  CONSTRUCTOR
 //  -----------
@@ -19,7 +19,8 @@ public class KeyInput extends KeyAdapter {
 //  METHODS
 //  -------
     public void keyPressed(KeyEvent e) {
-        int key = e.getKeyCode();
+        int key = e.getKeyCode();   //Gets pressed key
+
         //It loops through all the game objects and checks id
         for (GameObject tempObject : handler.object) {
             if (tempObject.id == ID.Player) {
@@ -36,7 +37,8 @@ public class KeyInput extends KeyAdapter {
     }
 
     public void keyReleased(KeyEvent e) {
-        int key = e.getKeyCode();
+        int key = e.getKeyCode();   //Gets released key
+
         //It loops through all the game objects and checks id
         for (GameObject tempObject : handler.object) {
             if (tempObject.id == ID.Player) {
