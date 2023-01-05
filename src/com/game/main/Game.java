@@ -3,11 +3,6 @@ package com.game.main;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
-import java.util.Random;
-
-//MOGE ZROBIC TAK ZE PUNKTY SIE DOSTAJE ZA DOBRA ODPOWIEDZ A ZA ZLA ODEJMUJE, ZA KOLIZJE SIE ODEJMUJE PUNKT TEZ
-//NAJLEPSZY WYNIK TO ILOSC ZDOBYTYCH PUNKTOW, WRAZ Z CZASEM, PREDKOSC SAMOCHODU SIE ZWIEKSZA
-
 
 //This is main class
 public class Game extends Canvas implements Runnable {
@@ -19,15 +14,14 @@ public class Game extends Canvas implements Runnable {
     static final int carWidth = 250, carHeight = 200;    //Dimensions of resized car
     static final int widthCorrection = 16, heightCorrection = 39;    //It is needed to correct dimensions, explanation above
     static final int downBarHeight = 26; //Object cannot cover bar with game status
+    static final int[] traces = {110,515,900}; //Enemy spawn places in x-axis
 
     private Thread thread;
     private boolean running = false;
 
     private final Handler handler;
     private final Hud hud;
-
-    private final int[] traces = {110,515,900}; //Enemy spawn places in x-axis
-    private final Random random = new Random();
+    private final Spawn spawn;
 
     static int amountOfTicks = 60;  //The max FPS for the game, it is set to public (inside package) to allow to change timeBar in class Hud
 
@@ -35,19 +29,11 @@ public class Game extends Canvas implements Runnable {
 //  -----------
     Game(){
         handler = new Handler();
-
         hud = new Hud();
-
-        this.addKeyListener(new KeyInput(handler));
-
+        spawn = new Spawn(handler,hud);
+        this.addKeyListener(new KeyInput(handler, spawn));
         new Window(WIDTH,HEIGHT,"Conscious racer", this);
         this.requestFocus();
-
-        handler.addObject(new Player((WIDTH-carWidth)/2,HEIGHT-carHeight-heightCorrection-downBarHeight,ID.Player, handler));
-
-        for(int i=0; i<2; i++){
-            handler.addObject(new Enemy(traces[random.nextInt(traces.length)],random.nextInt(HEIGHT-carHeight-heightCorrection-downBarHeight),ID.Enemy2));
-        }
     }
 
 //  METHODS
@@ -89,17 +75,18 @@ public class Game extends Canvas implements Runnable {
                     render();
                 frames++;
             }
-                if(System.currentTimeMillis() - timer >= 1000){
-                    timer += 1000;
-                    System.out.println("FPS: " + frames);
-                    frames = 0;
-                }
+
+            if(System.currentTimeMillis() - timer >= 1000){
+                timer += 1000;
+                System.out.println("FPS: " + frames);
+                frames = 0;
+            }
         }
         stop();
     }
 
     //It prevents the user to move object out of the map bounds
-        public static int clamp(int var, int min, int max){
+    public static int clamp(int var, int min, int max){
         if(var>=max)    //If value is higher than max, it returns declared max
             return var=max;
         else if(var<=min)   //If value is lower than min, it returns declared min
@@ -112,23 +99,25 @@ public class Game extends Canvas implements Runnable {
     private void tick(){
         handler.tick();
         hud.tick();
+        spawn.tick();
     }
 
     //It renders the game
     private void render(){
         BufferStrategy bs = this.getBufferStrategy();
         if(bs==null){
-            this.createBufferStrategy(2);   //It creates 3 buffers in game, recommended 2/3
+            this.createBufferStrategy(3);   //It creates 3 buffers in game, recommended 2/3
             return;
         }
         Graphics g = bs.getDrawGraphics();  //It creates graphics component
 
-        ImageIcon bg = new ImageIcon("C:\\Users\\piecz\\Documents\\Conscious_racer\\Pictures\\Tracks 1264x985\\track_11.png");  //Background of game in race mode
+        ImageIcon bg = new ImageIcon("D:\\Mateusz\\Documents\\Conscious_racer\\Pictures\\Tracks 1264x985\\track_2.png");  //Background of game in race mode
         Image pic = bg.getImage();
         g.drawImage(pic, 0, 0, null);   //Draw that background
 
         handler.render(g);
         hud.render(g);
+        spawn.render(g);
 
         g.dispose();
         bs.show();

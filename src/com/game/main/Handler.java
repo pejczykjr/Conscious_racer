@@ -9,21 +9,30 @@ public class Handler {
 
 //  VARIABLES
 //  ---------
-    //List containing all the game objects, because it is not known how many objects will be
-    LinkedList<GameObject> object = new LinkedList<>();
+    LinkedList<GameObject> object = new LinkedList<>(); //List containing all the game objects, because it is not known how many objects will be
+
+//  CONSTRUCTOR
+//  -----------
 
 //  METHODS
 //  -------
     //This method loops through all the game objects and updates them
     public void tick(){
-        for(GameObject tempObject : object)
+        //It was not working with enhanced for, there was problem with object removal, all for loops containing objects changed to default
+        for(int i=0; i< object.size(); i++){
+            GameObject tempObject = object.get(i);
+
             tempObject.tick();
+        }
     }
 
     //This method loops through all the game objects and renders them
     public void render(Graphics g){
-        for(GameObject tempObject : object)
+        for(int i=0; i< object.size(); i++){
+            GameObject tempObject = object.get(i);
+
             tempObject.render(g);
+        }
     }
 
     //Adds object to list

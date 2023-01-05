@@ -2,29 +2,28 @@ package com.game.main;
 
 import javax.swing.*;
 import java.awt.*;
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
-//This class ...
+//This class allows to create player object
 public class Player extends GameObject {
 
 //  VARIABLES
 //  ---------
-    private ImageIcon greenCar;
-    private ImageIcon purpleCar;
-    private ImageIcon blueCar;
-    private Handler handler;
-    private int score = 0;
+    private final ImageIcon greenCar;
+    private final ImageIcon purpleCar;
+    private final ImageIcon blueCar;
+    private final Handler handler;
+    private final Hud hud;
 
 //  CONSTRUCTOR
 //  -----------
-    Player(int x, int y, ID id, Handler handler){
+    Player(int x, int y, ID id, Handler handler, Hud hud){
         super(x,y,id);  //Calls a constructor with the same parameters as the equivalent from the class which we inherited
         this.handler=handler;
+        this.hud=hud;
 
-        blueCar = new ImageIcon("C:\\Users\\piecz\\Documents\\Conscious_racer\\Pictures\\Cars and light\\blue_car_resized.png");
+        blueCar = new ImageIcon("D:\\Mateusz\\Documents\\Conscious_racer\\Pictures\\Cars and light\\blue_car_resized.png");
+        greenCar = new ImageIcon("D:\\Mateusz\\Documents\\Conscious_racer\\Pictures\\Cars and light\\green_car_resized.png");
+        purpleCar = new ImageIcon("D:\\Mateusz\\Documents\\Conscious_racer\\Pictures\\Cars and light\\purple_car_resized.png");
     }
 
 //  METHODS
@@ -43,30 +42,39 @@ public class Player extends GameObject {
         collision();
     }
 
-    public void collision(){
-        for(GameObject tempObject: handler.object){
-            if(tempObject.getId()==ID.Enemy1 || tempObject.getId()==ID.Enemy2 || tempObject.getId()==ID.Enemy3)
-                if(getBounds().intersects(tempObject.getBounds())){
-                    //Collision code
-                    //After collision resets position of the player
-                    this.setX((Game.WIDTH-Game.carWidth)/2);
-                    this.setY(Game.HEIGHT-Game.carHeight-Game.heightCorrection-Game.downBarHeight);
-                    score-=1;
-
-                    Window.label.setText(String.valueOf(score));
-                    handler.removeObject(tempObject);
-                }
-
-        }
-    }
-
     public void render(Graphics g) {
         Image pic = null;
 
-        if(id == ID.Player)
-            pic = blueCar.getImage();
+        switch (id){
+            case Player1 -> pic = greenCar.getImage();
+            case Player2 -> pic = purpleCar.getImage();
+            case Player3 -> pic= blueCar.getImage();
+        }
+        g.drawImage(pic, x, y, null);
+    }
 
-        g.drawImage(pic, x,y ,null);
+    public void collision() {
+        for (int i=0; i<handler.object.size(); i++) {
+            GameObject tempObject = handler.object.get(i);
+
+            if (tempObject.getId() == ID.Enemy1 || tempObject.getId() == ID.Enemy2 || tempObject.getId() == ID.Enemy3)
+                if (getBounds().intersects(tempObject.getBounds())) {
+                    //Collision code
+
+                    //After collision resets position of the player to x coordinate where was collision and y to bottom
+                    if(tempObject.getX()==Game.traces[0])
+                        this.setX(Game.traces[0]);
+                    else if(tempObject.getX()==Game.traces[1])
+                        this.setX((Game.WIDTH - Game.carWidth) / 2);
+                    else if(tempObject.getX()==Game.traces[2])
+                        this.setX(Game.traces[2]);
+
+                    this.setY(Game.HEIGHT - Game.carHeight - Game.heightCorrection - Game.downBarHeight);
+
+                    hud.setScore(hud.getScore()-1);
+                    handler.removeObject(tempObject);
+                }
+        }
     }
 
 }
