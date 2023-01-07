@@ -16,9 +16,20 @@ public class Handler {
 
 //  METHODS
 //  -------
+    //Adds object to list
+    public void addObject(GameObject object){
+        this.object.add(object);
+}
+
+    //Removes object from list
+    public void removeObject(GameObject object){
+        this.object.remove(object);
+    }
+
+//  TICK AND RENDER METHODS
+//  -----------------------
     //This method loops through all the game objects and updates them
     public void tick(){
-        //It was not working with enhanced for, there was problem with object removal, all for loops containing objects changed to default
         for(int i=0; i< object.size(); i++){
             GameObject tempObject = object.get(i);
 
@@ -33,16 +44,6 @@ public class Handler {
 
             tempObject.render(g);
         }
-    }
-
-    //Adds object to list
-    public void addObject(GameObject object){
-        this.object.add(object);
-    }
-
-    //Removes object from list
-    public void removeObject(GameObject object){
-        this.object.remove(object);
     }
 
 }

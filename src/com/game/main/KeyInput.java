@@ -10,6 +10,7 @@ public class KeyInput extends KeyAdapter {
 //  ---------
     private final Handler handler;
     private final Spawn spawn;
+
     private boolean []keyDown = new boolean[4]; //It is made for better movement, no lagging
 
 //  CONSTRUCTOR
@@ -40,8 +41,13 @@ public class KeyInput extends KeyAdapter {
                 if (key == KeyEvent.VK_A) {tempObject.setVelX(-spawn.getEnemyVelocity()); keyDown[3]=true;}
             }
         }
-        if(key==KeyEvent.VK_ESCAPE)
-            System.exit(0);
+
+        if(key == KeyEvent.VK_ESCAPE){
+            if(Game.gameState == STATE.Game)
+                Game.gameState = STATE.GamePaused;
+            else if(Game.gameState == STATE.GamePaused)
+                Game.gameState = STATE.Game;
+        }
     }
 
     public void keyReleased(KeyEvent e) {

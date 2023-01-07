@@ -9,7 +9,6 @@ public class Game extends Canvas implements Runnable {
 
 //  VARIABLES
 //  ---------
-    //If classes are inside same package, they by default share variables (public inside same package)
     static final int WIDTH = 1280, HEIGHT = 1024;    //1296x1063, actually 1296-1280=16 and 1063-1024=39 -> map has to be 1264x985
     static final int carWidth = 250, carHeight = 200;    //Dimensions of resized car
     static final int widthCorrection = 16, heightCorrection = 39;    //It is needed to correct dimensions, explanation above
@@ -18,12 +17,20 @@ public class Game extends Canvas implements Runnable {
 
     private Thread thread;
     private boolean running = false;
+    static int amountOfTicks = 60;  //The max FPS for the game
 
+    private final Menu menu;
     private final Handler handler;
     private final Hud hud;
     private final Spawn spawn;
+    private final KeyInput keyInput;
+    private final GamePaused gamePaused;
 
-    static int amountOfTicks = 60;  //The max FPS for the game, it is set to public (inside package) to allow to change timeBar in class Hud
+    static boolean gameTrue = false;
+    static boolean gamePausedTrue = false;
+    static boolean menuTrue = false;
+
+    public static STATE gameState = STATE.Menu;
 
 //  CONSTRUCTOR
 //  -----------
@@ -31,7 +38,10 @@ public class Game extends Canvas implements Runnable {
         handler = new Handler();
         hud = new Hud();
         spawn = new Spawn(handler,hud);
-        this.addKeyListener(new KeyInput(handler, spawn));
+        menu = new Menu(handler, hud, spawn);
+        keyInput = new KeyInput(handler,spawn);
+        gamePaused = new GamePaused();
+
         new Window(WIDTH,HEIGHT,"Conscious racer", this);
         this.requestFocus();
     }
@@ -85,21 +95,55 @@ public class Game extends Canvas implements Runnable {
         stop();
     }
 
-    //It prevents the user to move object out of the map bounds
-    public static int clamp(int var, int min, int max){
-        if(var>=max)    //If value is higher than max, it returns declared max
-            return var=max;
-        else if(var<=min)   //If value is lower than min, it returns declared min
-            return var=min;
-        else
-            return var; //If value is in between bounds, stays same
+    public static void main(String[] args){
+        new Game();
     }
 
+//  TICK AND RENDER METHODS
+//  -----------------------
     //It updates the game
     private void tick(){
-        handler.tick();
-        hud.tick();
-        spawn.tick();
+        if(gameState == STATE.Game){
+
+            if(gameTrue == false) {
+                this.addKeyListener(keyInput);
+                this.removeMouseListener(gamePaused);
+                this.removeMouseListener(menu);
+
+                gameTrue = true;
+                menuTrue = false;
+                gamePausedTrue = false;
+            }
+
+            handler.tick(); //if handler is inside, it remembers state of paused game
+            hud.tick();
+            spawn.tick();
+        }
+        else if (gameState == STATE.Menu){
+
+            if(menuTrue == false) {
+                this.addMouseListener(menu);
+                this.removeKeyListener(keyInput);
+                this.removeMouseListener(gamePaused);
+
+                menu.trueFalseState();
+            }
+
+            menu.tick();
+        }
+        else if (gameState == STATE.HighestScore){
+            //-------------------------------------------
+        }
+        else if(gameState == STATE.GamePaused){
+            if(gamePausedTrue == false){
+                this.addMouseListener(gamePaused);
+                this.removeMouseListener(menu);
+                this.removeKeyListener(keyInput);
+
+                gamePaused.trueFalseState();
+            }
+            gamePaused.tick();
+        }
     }
 
     //It renders the game
@@ -111,20 +155,33 @@ public class Game extends Canvas implements Runnable {
         }
         Graphics g = bs.getDrawGraphics();  //It creates graphics component
 
-        ImageIcon bg = new ImageIcon("D:\\Mateusz\\Documents\\Conscious_racer\\Pictures\\Tracks 1264x985\\track_2.png");  //Background of game in race mode
-        Image pic = bg.getImage();
-        g.drawImage(pic, 0, 0, null);   //Draw that background
+        ImageIcon raceImage = new ImageIcon("D:\\Mateusz\\Documents\\Conscious_racer\\Pictures\\Tracks 1264x985\\track_2.png");  //Background of game in race mode
+        Image pic = raceImage.getImage();
 
-        handler.render(g);
-        hud.render(g);
-        spawn.render(g);
+        if(gameState == STATE.Game){
+            g.drawImage(pic, 0, 0, null);
+
+            handler.render(g);
+            hud.render(g);
+            spawn.render(g);
+        }
+        else if (gameState == STATE.Menu){
+            menu.render(g);
+        }
+        else if (gameState == STATE.HighestScore){
+            //-------------------------------------------
+        }
+        else if(gameState == STATE.GamePaused){
+            g.drawImage(pic, 0, 0, null);
+
+            handler.render(g);
+            hud.render(g);
+            spawn.render(g);
+            gamePaused.render(g);
+        }
 
         g.dispose();
         bs.show();
-    }
-
-    public static void main(String[] args){
-        new Game();
     }
 
 }

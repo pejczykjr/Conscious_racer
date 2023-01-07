@@ -10,60 +10,102 @@ public class Spawn {
 //  ---------
     private final Handler handler;
     private final Hud hud;
-    private final Random random = new Random();
     private ID id;
-    private int countTicks; //After certain number speed of enemy car will be increased
+    private Player player;
+
+    private final Random random = new Random();
+
+    private final int x = (Game.WIDTH - Game.carWidth) / 2;
+    private final int y = Game.HEIGHT - Game.carHeight - Game.heightCorrection - Game.downBarHeight;
+
+    private int countTicks; //After certain number, speed of enemy car will be increased
     private int enemyVelocity;   //It will manipulate enemy's speed, to not lose current velocity after car removal
-    private boolean hardMode;   //After half of time it will add second enemy on the different trace, enemy will be added after some ticks, according to first enemy car velocity !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    //or maybe in the first part to add 2 cars until it gets to half of time because of high speed later on
+
 //  CONSTRUCTOR
 //  -----------
     public Spawn(Handler handler, Hud hud){
         this.handler=handler;
         this.hud=hud;
 
+        player = new Player(x, y, setRandomPlayerID(), handler, hud);
+        countTicks=0;
+        enemyVelocity=1;
+    }
+
+//  METHODS
+//  -------
+
+    //Setters
+    public ID setRandomEnemyID(){
+        //Randomly chooses colour of the Enemy's car
+        switch (random.nextInt(3) + 1) {
+            case 1 -> id = ID.Enemy1;
+            case 2 -> id = ID.Enemy2;
+            case 3 -> id = ID.Enemy3;
+        }
+        return id;
+    }
+
+    public ID setRandomPlayerID(){
         //Randomly chooses colour of the Player's car
         switch(random.nextInt(3)+1){
             case 1 -> id = ID.Player1;
             case 2 -> id = ID.Player2;
             case 3 -> id = ID.Player3;
         }
-
-        countTicks=0;
-        enemyVelocity=1;
-        hardMode=false;
-        handler.addObject(new Player((Game.WIDTH-Game.carWidth)/2,Game.HEIGHT-Game.carHeight-Game.heightCorrection-Game.downBarHeight,id, handler, hud));
+        return id;
     }
 
-//  METHODS
+    public void setEnemyVelocity(int enemyVelocity){
+        this.enemyVelocity=enemyVelocity;
+    }
+
+    //Getters
+    public int getEnemyVelocity(){
+        return this.enemyVelocity;
+    }
+
+//  TICK AND RENDER METHODS
 //  -------
     public void tick(){
-        //Randomly chooses colour of the Enemy's car
-        switch(random.nextInt(3)+1){
-            case 1 -> id = ID.Enemy1;
-            case 2 -> id = ID.Enemy2;
-            case 3 -> id = ID.Enemy3;
+        //Setting upper level
+        if((hud.timeBar >= hud.TIME/2) && hud.getLevel() == 1)
+            hud.setLevel(hud.getLevel()+1);
+
+        //Creates player if it doesn't exist
+        if(!handler.object.contains(player)){
+            handler.addObject(player);
+            player.x = x;
+            player.y = y;
         }
 
-        //Creates enemy if it doesn't exist
-        if(hardMode==false && handler.object.size()<2) //First is reserved for Player object
-            handler.addObject(new Enemy(Game.traces[random.nextInt(Game.traces.length)],-1*Game.carHeight,id, this));
-        else if(hardMode==true)
-            ;
+        //Tick for level 1
+        if(hud.getLevel()==1) {
+            if (handler.object.size() < 2) { //One is reserved for Player object
+                handler.addObject(new Enemy(Game.traces[random.nextInt(Game.traces.length)], -1 * Game.carHeight, setRandomEnemyID(), this));
+                handler.addObject(new Enemy(Game.traces[random.nextInt(Game.traces.length)], -1 * Game.carHeight, setRandomEnemyID(), this));
+            }
+        }
+        //Tick for level 2
+        else{
+            if (handler.object.size() < 2)  //First is reserved for Player object
+                handler.addObject(new Enemy(Game.traces[random.nextInt(Game.traces.length)], -1 * Game.carHeight, setRandomEnemyID(), this));
+        }
 
-        //If tempObject is Enemy and car passed down without collision with Player, delete Enemy
-        for(int i=0; i<handler.object.size(); i++){
+        //Enemy removal loop
+        for (int i = 0; i < handler.object.size(); i++) {
             GameObject tempObject = handler.object.get(i);
 
-            if(tempObject.id==ID.Enemy1 || tempObject.id==ID.Enemy2 || tempObject.id==ID.Enemy3) {
-                //After 5s seconds velocity in y-axis will be increased by 1
-                if (countTicks == 5 * Game.amountOfTicks) {
-                    countTicks = 0;
+            if (tempObject.id == ID.Enemy1 || tempObject.id == ID.Enemy2 || tempObject.id == ID.Enemy3) {
+                //After 6s seconds velocity in y-axis and score will be increased by 1
+                if (countTicks == 6 * Game.amountOfTicks) {
                     enemyVelocity++;
+                    hud.setScore(hud.getScore() + 1);
+                    countTicks = 0;
                 }
                 countTicks++;
-
-                if(tempObject.getY()>=(Game.HEIGHT-Game.heightCorrection-Game.downBarHeight))
+                //If tempObject is Enemy and car passed down without collision with Player, delete Enemy
+                if (tempObject.getY() >= (Game.HEIGHT - Game.heightCorrection - Game.downBarHeight))
                     handler.removeObject(tempObject);
             }
         }
@@ -73,13 +115,4 @@ public class Spawn {
 
     }
 
-    //Setters
-    public void setEnemyVelocity(int enemyVelocity){
-        this.enemyVelocity=enemyVelocity;
-    }
-
-    //Getters
-    public int getEnemyVelocity(){
-        return this.enemyVelocity;
-    }
 }

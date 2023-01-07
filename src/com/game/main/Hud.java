@@ -7,24 +7,46 @@ public class Hud {
 
 //  VARIABLES
 //  ---------
-    private final int TIME = 180; //Time that is needed to finish game
-    private float timeBar;  //Progress bar
+    final int TIME = 180; //Time that is needed to finish game
+    float timeBar;  //Progress bar
     private int greenValue;
-    private int score=0; //Game score
-    private final int fontSize=18;  //Height of progress and score bars and font size
+
+    private final int fontSize = 18;  //Height of progress and score bars and font size
+
+    private int score = 0; //Game score
+    private int level = 1;  //Game level
 
 //  CONSTRUCTOR
 //  -----------
 
 //  METHODS
 //  -------
+    //Setters
+    public void setScore(int score){
+        this.score = score;
+    }
+
+    public void setLevel(int level){
+        this.level = level;
+    }
+
+    //Getters
+    public int getScore(){
+        return score;
+    }
+
+    public int getLevel(){
+        return level;
+    }
+
+//  TICK AND RENDER METHODS
+//  -----------------------
     public void tick(){
-        if(timeBar<=TIME) {
+        if(timeBar<=TIME)
             timeBar += 1. / Game.amountOfTicks; //Every one second moves timeBar towards end
-        }
 
         greenValue = 255 - (int) (timeBar * 255/TIME);   //Progress bar will change its colour from green to red, 255/360 because: TIME=360 - 100%, max greenValue=255 - ?
-        greenValue = Game.clamp(greenValue, 0, 255);
+        greenValue = Player.clamp(greenValue, 0, 255);
     }
 
     public void render(Graphics g){
@@ -34,30 +56,22 @@ public class Hud {
 
         //GRAY BARS ON THE BLACK BAR
         g.setColor(Color.GRAY);
-        g.fillRect(238,962,90,fontSize);  //For score
-        g.fillRect(611,962,TIME,fontSize);    //For progress - time
+        g.fillRect(600,962,90,fontSize);  //For score
+        g.fillRect(940,962,TIME,fontSize);    //For progress - time
 
         //COLOURING PROGRESS BAR
         g.setColor(new Color(75, greenValue, 0));
-        g.fillRect(611,962,(int)timeBar,fontSize);  //TimeBar is increased after passing total number
+        g.fillRect(940,962,(int)timeBar,fontSize);  //TimeBar is increased after passing total number
 
-        //WHITE FONT STRINGS NEXT TO GRAY BARS
+        //STRINGS WITH WHITE FONT NEXT TO GRAY BARS
         g.setColor(Color.WHITE);
-        g.setFont(new Font(Font.DIALOG,Font.BOLD,fontSize));
-        g.drawString("Score",180,977);  //X and y values are picked by atrial-and-error to fit well
-        g.drawString("Time", 560,977);
-        g.drawString(TIME +"s",611+TIME/3,977); //Displays total time of game
-        g.drawString(String.valueOf(score),239,977);
-    }
+        g.setFont(new Font("Arial",Font.ITALIC,fontSize));
+        g.drawString("Level: " + level, 175, 977);
+        g.drawString("Score",545,977);  //X and y values are picked by atrial-and-error to fit well
+        g.drawString(String.valueOf(score),602,977);
+        g.drawString("Time", 890,977);
+        g.drawString(TIME +"s",940+TIME/3,977); //Displays total time of game
 
-    //Setters
-    public void setScore(int score){
-        this.score = score;
-    }
-
-    //Getters
-    public int getScore(){
-        return score;
     }
 
 }
