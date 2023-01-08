@@ -1,6 +1,5 @@
 package com.game.main;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
 
@@ -25,10 +24,7 @@ public class Game extends Canvas implements Runnable {
     private final Spawn spawn;
     private final KeyInput keyInput;
     private final GamePaused gamePaused;
-
-    static boolean gameTrue = false;
-    static boolean gamePausedTrue = false;
-    static boolean menuTrue = false;
+    private final HighestScore highestScore;
 
     public static STATE gameState = STATE.Menu;
 
@@ -36,11 +32,17 @@ public class Game extends Canvas implements Runnable {
 //  -----------
     Game(){
         handler = new Handler();
-        hud = new Hud();
+        hud = new Hud(handler);
+        highestScore = new HighestScore(hud);
         spawn = new Spawn(handler,hud);
-        menu = new Menu(handler, hud, spawn);
+        menu = new Menu(handler, hud, spawn, highestScore);
         keyInput = new KeyInput(handler,spawn);
-        gamePaused = new GamePaused();
+        gamePaused = new GamePaused(hud,highestScore,menu);
+
+
+        this.addKeyListener(keyInput);
+        this.addMouseListener(menu);
+        this.addMouseListener(gamePaused);
 
         new Window(WIDTH,HEIGHT,"Conscious racer", this);
         this.requestFocus();
@@ -103,46 +105,23 @@ public class Game extends Canvas implements Runnable {
 //  -----------------------
     //It updates the game
     private void tick(){
+        handler.tick();
+
         if(gameState == STATE.Game){
-
-            if(gameTrue == false) {
-                this.addKeyListener(keyInput);
-                this.removeMouseListener(gamePaused);
-                this.removeMouseListener(menu);
-
-                gameTrue = true;
-                menuTrue = false;
-                gamePausedTrue = false;
-            }
-
-            handler.tick(); //if handler is inside, it remembers state of paused game
             hud.tick();
             spawn.tick();
-        }
-        else if (gameState == STATE.Menu){
 
-            if(menuTrue == false) {
-                this.addMouseListener(menu);
-                this.removeKeyListener(keyInput);
-                this.removeMouseListener(gamePaused);
-
-                menu.trueFalseState();
+            if((int)hud.timeBar == hud.TIME){
+                gameState = STATE.GameOver;
+                //handler.object.clear();
             }
-
+        }
+        else if (gameState == STATE.Menu || gameState == STATE.HighestScore){
             menu.tick();
         }
-        else if (gameState == STATE.HighestScore){
-            //-------------------------------------------
-        }
-        else if(gameState == STATE.GamePaused){
-            if(gamePausedTrue == false){
-                this.addMouseListener(gamePaused);
-                this.removeMouseListener(menu);
-                this.removeKeyListener(keyInput);
-
-                gamePaused.trueFalseState();
-            }
+        else if(gameState == STATE.GamePaused || gameState == STATE.TrafficLaw || gameState == STATE.GameOver) {
             gamePaused.tick();
+            //TODO TICK: FOR TRAFFIC LAW
         }
     }
 
@@ -155,29 +134,21 @@ public class Game extends Canvas implements Runnable {
         }
         Graphics g = bs.getDrawGraphics();  //It creates graphics component
 
-        ImageIcon raceImage = new ImageIcon("D:\\Mateusz\\Documents\\Conscious_racer\\Pictures\\Tracks 1264x985\\track_2.png");  //Background of game in race mode
-        Image pic = raceImage.getImage();
+        handler.render(g);
 
         if(gameState == STATE.Game){
-            g.drawImage(pic, 0, 0, null);
-
-            handler.render(g);
             hud.render(g);
             spawn.render(g);
         }
-        else if (gameState == STATE.Menu){
+        else if (gameState == STATE.Menu || gameState == STATE.HighestScore){
             menu.render(g);
         }
-        else if (gameState == STATE.HighestScore){
-            //-------------------------------------------
-        }
-        else if(gameState == STATE.GamePaused){
-            g.drawImage(pic, 0, 0, null);
-
-            handler.render(g);
+        else if(gameState == STATE.GamePaused || gameState == STATE.TrafficLaw || gameState == STATE.GameOver){
             hud.render(g);
             spawn.render(g);
             gamePaused.render(g);
+
+            //TODO RENDER: FOR TRAFFIC LAW
         }
 
         g.dispose();

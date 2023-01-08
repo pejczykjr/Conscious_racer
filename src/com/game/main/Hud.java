@@ -7,6 +7,8 @@ public class Hud {
 
 //  VARIABLES
 //  ---------
+    private final Handler handler;
+
     final int TIME = 180; //Time that is needed to finish game
     float timeBar;  //Progress bar
     private int greenValue;
@@ -18,6 +20,9 @@ public class Hud {
 
 //  CONSTRUCTOR
 //  -----------
+    public Hud(Handler handler){
+        this.handler = handler;
+    }
 
 //  METHODS
 //  -------
@@ -42,7 +47,7 @@ public class Hud {
 //  TICK AND RENDER METHODS
 //  -----------------------
     public void tick(){
-        if(timeBar<=TIME)
+        if(timeBar<TIME)
             timeBar += 1. / Game.amountOfTicks; //Every one second moves timeBar towards end
 
         greenValue = 255 - (int) (timeBar * 255/TIME);   //Progress bar will change its colour from green to red, 255/360 because: TIME=360 - 100%, max greenValue=255 - ?
@@ -70,7 +75,7 @@ public class Hud {
         g.drawString("Score",545,977);  //X and y values are picked by atrial-and-error to fit well
         g.drawString(String.valueOf(score),602,977);
         g.drawString("Time", 890,977);
-        g.drawString(TIME +"s",940+TIME/3,977); //Displays total time of game
+        g.drawString(TIME-(int)timeBar +"s",940+TIME/3,977); //Displays total time of game
 
     }
 

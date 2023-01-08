@@ -5,5 +5,7 @@ public enum STATE {
     Menu,
     Game,
     HighestScore,
-    GamePaused
+    GamePaused,
+    GameOver,
+    TrafficLaw
 }

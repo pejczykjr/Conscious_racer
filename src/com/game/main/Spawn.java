@@ -15,9 +15,6 @@ public class Spawn {
 
     private final Random random = new Random();
 
-    private final int x = (Game.WIDTH - Game.carWidth) / 2;
-    private final int y = Game.HEIGHT - Game.carHeight - Game.heightCorrection - Game.downBarHeight;
-
     private int countTicks; //After certain number, speed of enemy car will be increased
     private int enemyVelocity;   //It will manipulate enemy's speed, to not lose current velocity after car removal
 
@@ -27,7 +24,6 @@ public class Spawn {
         this.handler=handler;
         this.hud=hud;
 
-        player = new Player(x, y, setRandomPlayerID(), handler, hud);
         countTicks=0;
         enemyVelocity=1;
     }
@@ -74,9 +70,8 @@ public class Spawn {
 
         //Creates player if it doesn't exist
         if(!handler.object.contains(player)){
+            player = new Player((Game.WIDTH - Game.carWidth) / 2, Game.HEIGHT - Game.carHeight - Game.heightCorrection - Game.downBarHeight, setRandomPlayerID(), handler, hud);
             handler.addObject(player);
-            player.x = x;
-            player.y = y;
         }
 
         //Tick for level 1

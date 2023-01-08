@@ -54,22 +54,22 @@ public class KeyInput extends KeyAdapter {
         int key = e.getKeyCode();   //Gets released key
 
         //It loops through all the game objects and checks id
-        for (int i=0; i<handler.object.size(); i++) {
+        for (int i = 0; i < handler.object.size(); i++) {
             GameObject tempObject = handler.object.get(i);
 
             if (tempObject.id == ID.Player1 || tempObject.id == ID.Player2 || tempObject.id == ID.Player3) {
                 //Key events for Player when key is released
 
-                if (key == KeyEvent.VK_W) keyDown[0]=false;
-                if (key == KeyEvent.VK_S) keyDown[1]=false;
-                if (key == KeyEvent.VK_D) keyDown[2]=false;
-                if (key == KeyEvent.VK_A) keyDown[3]=false;
+                if (key == KeyEvent.VK_W) keyDown[0] = false;
+                if (key == KeyEvent.VK_S) keyDown[1] = false;
+                if (key == KeyEvent.VK_D) keyDown[2] = false;
+                if (key == KeyEvent.VK_A) keyDown[3] = false;
 
                 //Vertical movement
-                if(!keyDown[0] && !keyDown[1])
+                if (!keyDown[0] && !keyDown[1])
                     tempObject.setVelY(0);
                 //Horizontal movement
-                if(!keyDown[2] && !keyDown[3])
+                if (!keyDown[2] && !keyDown[3])
                     tempObject.setVelX(0);
             }
         }
