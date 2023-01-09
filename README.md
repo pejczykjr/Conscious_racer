@@ -44,7 +44,7 @@ marking a choice about not turning when seeing a sign telling you to go straight
 
     - Class Game, line 37.
 
-`4. Set time after enemies speeds up.`  
+`4. Set time after enemies speed up.`  
 
     - Class Spawn, line 91.
 
