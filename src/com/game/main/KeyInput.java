@@ -3,18 +3,31 @@ package com.game.main;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-//This class manipulates keys
+/**
+ * Class is responsible for manipulating keys.
+ * @author Mateusz Pieczykolan
+ */
 public class KeyInput extends KeyAdapter {
 
-//  VARIABLES
-//  ---------
+    /**
+     * Declaration of handler instance.
+     */
     private final Handler handler;
+    /**
+     * Declaration of spawn instance.
+     */
     private final Spawn spawn;
 
-    private boolean []keyDown = new boolean[4]; //It is made for better movement, no lagging
+    /**
+     * This variable keeps information if key is pressed and is made for better player movement.
+     */
+    private boolean []keyDown = new boolean[4];
 
-//  CONSTRUCTOR
-//  -----------
+    /**
+     * Constructor, initializes keyDown array.
+     * @param handler passing the handler instance
+     * @param spawn passing the spawn instance
+     */
     public KeyInput(Handler handler, Spawn spawn) {
         this.handler = handler;
         this.spawn=spawn;
@@ -23,8 +36,11 @@ public class KeyInput extends KeyAdapter {
             initKeyDown=false;
     }
 
-//  METHODS
-//  -------
+    /**
+     * This method is responsible for moving Player object when WASD key is pressed. It also performs action<br>
+     * to go to STATE.GamePaused when Esc is pressed and vice versa.
+     * @param e the event to be processed
+     */
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();   //Gets pressed key
 
@@ -50,6 +66,10 @@ public class KeyInput extends KeyAdapter {
         }
     }
 
+    /**
+     * This method is responsible for setting velocity of Player object to 0 when WASD key is released.
+     * @param e the event to be processed
+     */
     public void keyReleased(KeyEvent e) {
         int key = e.getKeyCode();   //Gets released key
 

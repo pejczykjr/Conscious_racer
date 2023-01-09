@@ -32,16 +32,21 @@ marking a choice about not turning when seeing a sign telling you to go straight
 
 `1. Replace pictures' paths to your own.`
 
-    -   Class GameObject, lines 24-30.  
-    -   Class Handler, line 20.
+    -   Class GameObject, lines 46-52.
+    -   Class Handler, line 32-34. 
+    -   Class Menu, line 69.
 
 `2. Set time of the game you want to spend on it.`
 
-    -   Class Hud, line 12.
+    -   Class Hud, line 19.
 
 `3. Set FPS you want to play at.`
 
-    - Class Game, line 19.
+    - Class Game, line 37.
+
+`4. Set time after enemies speeds up.`  
+
+    - Class Spawn, line 91.
 
 ## Project requirements/steps
 - [x] Creation of images

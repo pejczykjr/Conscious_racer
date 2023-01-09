@@ -1,6 +1,9 @@
 package com.game.main;
 
-//It is going to be used for menu handling
+/**
+ * Enum containing the types of states in the game.
+ * @author Mateusz Pieczykolan
+ */
 public enum STATE {
     Menu,
     Game,

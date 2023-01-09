@@ -1,6 +1,9 @@
 package com.game.main;
 
-//Here are all the id's for game that can be set
+/**
+ * Here are all the id's that can be set for objects.
+ * @author Mateusz Pieczykolan
+ */
 public enum ID {
     Player1,
     Player2,

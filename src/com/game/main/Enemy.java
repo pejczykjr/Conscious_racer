@@ -2,33 +2,43 @@ package com.game.main;
 
 import java.awt.*;
 
-//This class allows to create enemy object
+/**
+ * Class responsible for enemy's object creation.
+ * @author Mateusz Pieczykolan
+ */
 public class Enemy extends GameObject{
 
-//  VARIABLES
-//  ---------
+    /**
+     * Declaration of spawn instance.
+     */
     private final Spawn spawn;
 
-//  CONSTRUCTOR
-//  -----------
+    /**
+     * Enemy object constructor. Calls the constructor of the GameObject class and receives its parameters.
+     * @param x initial object's position on the x-axis
+     * @param y initial object's position on the y-axis
+     * @param id object's ID
+     * @param spawn passing the spawn instance
+     */
     public Enemy(int x, int y, ID id, Spawn spawn) {
-        super(x, y, id);    //Calls a constructor with the same parameters as the equivalent from the class which we inherited
+        super(x, y, id);
         this.spawn=spawn;
     }
 
-//  METHODS
-//  -------
-    public Rectangle getBounds() {
-        return new Rectangle(x,y,Game.carWidth,Game.carHeight);
-    }
-
-//  TICK AND RENDER METHODS
-//  -----------------------
+    /**
+     * This method is responsible for refreshing Enemy object.<br>
+     * Gets velocity values on y-axis from spawn instance and changes the Enemy object's position based on that.
+     */
     public void tick() {
-        velY = spawn.getEnemyVelocity();    //Velocity of enemy's car in y-axis
+        velY = spawn.getEnemyVelocity();
         y+=velY;
     }
 
+    /**
+     * This method is responsible for rendering Enemy object.<br>
+     * Based on the Enemy object's ID assigns certain image from parent class as a texture.
+     * @param g passing the graphic component
+     */
     public void render(Graphics g) {
         switch (id){
             case Enemy1 -> pic = greenCarRev.getImage();
@@ -36,6 +46,14 @@ public class Enemy extends GameObject{
             case Enemy3 -> pic= blueCarRev.getImage();
         }
         g.drawImage(pic, x, y, null);
+    }
+
+    /**
+     * This method is responsible for returning the object bounds.
+     * @return returns object bounds
+     */
+    public Rectangle getBounds() {
+        return new Rectangle(x,y,Game.carWidth,Game.carHeight);
     }
 
 }
